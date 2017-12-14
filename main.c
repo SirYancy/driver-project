@@ -5,7 +5,7 @@
 #include "producer.h"
 #include "consumer.h"
 
-int num_of_threads = 10;
+int num_of_threads = 20;
 
 int main()
 {

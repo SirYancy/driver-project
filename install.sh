@@ -5,4 +5,5 @@ make
 python unload.py
 python load.py scull_size=512
 cd ..
+make
 printf "Scull buffer device at: /dev/scullBuffer0\n"
