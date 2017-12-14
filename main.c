@@ -19,14 +19,14 @@ int main()
 
     for(i = 0; i < num_of_threads; i++)
     {
-        struct Producer * p = producer_init(0, file);
+        struct Producer * p = producer_init(i, file);
         pthread_t tid;
         pthread_create(&tid, NULL, producer_func, (void*)p);
         producers[i] = tid;
     }
     for(i = 0; i < num_of_threads; i++)
     {
-        struct Consumer* p = consumer_init(0, file);
+        struct Consumer* p = consumer_init(i, file);
         pthread_t tid;
         pthread_create(&tid, NULL, consumer_func, (void*)p);
         consumers[i] = tid;
