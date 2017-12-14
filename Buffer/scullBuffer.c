@@ -29,6 +29,8 @@ struct file_operations scullBuffer_fops = {
 */
 int scull_init_module(void)
 {
+	
+	printk(KERN_DEBUG "scullBuffer: initializing module \n");
 	int result = 0;
 	dev_t dev = 0;
 	
