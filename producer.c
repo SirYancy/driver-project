@@ -23,8 +23,6 @@ struct Producer * producer_init(int i, char * d)
     struct Producer *p = (struct Producer *)malloc(sizeof(struct Producer));
     p->id = i;
     strcpy(p->device, d);
-    pthread_t tid;
-    p->tid = tid;
     return p;
 }
 

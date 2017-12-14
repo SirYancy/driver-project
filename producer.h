@@ -15,6 +15,5 @@ struct Producer {
 void *producer_func(void *arg);
 
 struct Producer * producer_init(int i, char * d);
-void join_producer(struct Producer * p);
 
 #endif //_PRODUCER_H_

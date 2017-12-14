@@ -2,7 +2,7 @@ CC = gcc
 
 CFLAGS = -pthread
 
-OBJECTS = producer.o main.o
+OBJECTS = consumer.o producer.o main.o
 
 default: clean
 default: driver
@@ -16,6 +16,9 @@ main.o: main.c
 
 producer.o: producer.c
 	$(CC) $(CFLAGS) -c producer.c -o producer.o
+
+consumer.o: consumer.c
+	$(CC) $(CFLAGS) -c consumer.c -o consumer.o
 
 driver: $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) -o driver
