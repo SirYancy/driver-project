@@ -1,5 +1,4 @@
 #include "scullBuffer.h"
-
 /* Parameters which can be set at load time */
 int scull_major = SCULL_MAJOR;
 int scull_minor = 0;
