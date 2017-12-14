@@ -1,1 +1,0 @@
-cmd_/home/student/jared/driver-project/Buffer/scullBuffer.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/student/jared/driver-project/Buffer/scullBuffer.ko /home/student/jared/driver-project/Buffer/scullBuffer.o /home/student/jared/driver-project/Buffer/scullBuffer.mod.o
