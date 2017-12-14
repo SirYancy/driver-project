@@ -48,7 +48,7 @@ int scull_init_module(void)
 	}
 	
 	/* alloc space for the buffer (scull_size bytes) */
-	scullBufferDevice.bufferPtr = kmalloc( scull_size , GFP_KERNEL);
+	scullBufferDevice.bufferPtr = kmalloc( scull_size*512 , GFP_KERNEL);
 	if(scullBufferDevice.bufferPtr == NULL)
 	{
 		scull_cleanup_module();
@@ -60,10 +60,14 @@ int scull_init_module(void)
 	scullBufferDevice.writerCnt = 0;
 	scullBufferDevice.size = 0;
 		
-	/* Initialize the semaphore*/
+	/* Initialize the semaphores*/
 	sema_init(&scullBufferDevice.sem, 1);
+<<<<<<< HEAD
 
     /* Initialize counting semaphore */
+=======
+	sema_init(&scullBufferDevice.sem_ct, scull_size);
+>>>>>>> aa1d13fa174ffed49878b81bd8c40c85a8abe306
 	
 	/* Finally, set up the c dev. Now we can start accepting calls! */
 	scull_setup_cdev(&scullBufferDevice);
@@ -164,8 +168,13 @@ ssize_t scullBuffer_read(
 	struct scull_buffer *dev = (struct scull_buffer *)filp->private_data;
 	ssize_t countRead = 0;
 	
+	//if buffer is empty and there are no producers, return
+	if(dev->size == 0 && dev->writerCnt == 0){
+		printk(KERN_DEBUG "scullBuffer: read called with empty buffer and no active writers");
+		return 0;		
+	}	
 	/* get exclusive access */
-	if (down_interruptible(&dev->sem))
+	if (down_interruptible(&dev->sem) || down_interruptible(&dev->sem_ct))
 		return -ERESTARTSYS;	
 		
 	printk(KERN_DEBUG "scullBuffer: read called count= %d\n", count);
@@ -191,6 +200,7 @@ ssize_t scullBuffer_read(
 	/* now we're done release the semaphore */
 	out: 
 	up(&dev->sem);
+	up(&dev->sem_ct);
 	return countRead;
 }
 
@@ -203,17 +213,21 @@ ssize_t scullBuffer_write(struct file *filp, const char __user *buf, size_t coun
 	int countWritten = 0;
 	struct scull_buffer *dev = (struct scull_buffer *)filp->private_data;
 	
-	if (down_interruptible(&dev->sem))
+	//if buffer is full and there are no readers
+	if(dev->size == scull_size*512 && dev->readerCnt == 0){
+		return 0;
+	}	
+	if (down_interruptible(&dev->sem) || down_interruptible(&dev->sem_ct))
 		return -ERESTARTSYS;	
 	
 	/* have we crossed the size of the buffer? */
 	printk(KERN_DEBUG "scullBuffer: write called count= %d\n", count);
 	printk(KERN_DEBUG "scullBuffer: cur pos= %lld, size= %d \n", *f_pos, (int)dev->size);
-	if( *f_pos >= scull_size)
+	if( *f_pos >= scull_size*512)
 		goto out;
 	/* write till the end of buffer */
-	if( *f_pos + count > scull_size)
-		count = scull_size - *f_pos;
+	if( *f_pos + count > scull_size*512)
+		count = scull_size*512 - *f_pos;
 	printk(KERN_DEBUG "scullBuffer: writing %d bytes \n", (int)count);
 	/* write data to the buffer */
 	if (copy_from_user(dev->bufferPtr + *f_pos, buf, count)) {
@@ -228,5 +242,6 @@ ssize_t scullBuffer_write(struct file *filp, const char __user *buf, size_t coun
 	printk(KERN_DEBUG "scullBuffer: new pos= %lld, new size= %d \n", *f_pos, (int)dev->size);
 	out:
 	up(&dev->sem);
+	up(&dev->sem_ct);
 	return countWritten;
 }
