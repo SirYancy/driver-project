@@ -19,7 +19,7 @@
 #include <linux/sched.h>
 #include <linux/ioctl.h> 
 
-#include <asm/system.h>		
+//#include <asm/system.h>		
 #include <asm/uaccess.h>	
 
 #define SCULL_MAJOR 0   /* dynamic major by default */
@@ -29,6 +29,7 @@
 struct scull_buffer {
 	void *bufferPtr; /* pointer to the data buffer */
 	struct semaphore sem;  /* mutual exclusion semaphore     */
+	struct semaphore sem_ct;
 	int readerCnt; /* count of no of readers accessing the device */
 	int writerCnt; /* count of no of writers accessing the device */
 	int size; /* amount of data held in the buffer currently */
