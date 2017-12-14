@@ -1,5 +1,4 @@
 #include "scullBuffer.h"
-
 /* Parameters which can be set at load time */
 int scull_major = SCULL_MAJOR;
 int scull_minor = 0;
@@ -29,6 +28,8 @@ struct file_operations scullBuffer_fops = {
 */
 int scull_init_module(void)
 {
+	
+	printk(KERN_DEBUG "scullBuffer: initializing module \n");
 	int result = 0;
 	dev_t dev = 0;
 	
@@ -62,12 +63,7 @@ int scull_init_module(void)
 		
 	/* Initialize the semaphores*/
 	sema_init(&scullBufferDevice.sem, 1);
-<<<<<<< HEAD
-
-    /* Initialize counting semaphore */
-=======
 	sema_init(&scullBufferDevice.sem_ct, scull_size);
->>>>>>> aa1d13fa174ffed49878b81bd8c40c85a8abe306
 	
 	/* Finally, set up the c dev. Now we can start accepting calls! */
 	scull_setup_cdev(&scullBufferDevice);
