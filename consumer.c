@@ -12,7 +12,7 @@ void *consumer_func(void *arg)
     {
         char buff[512];
         FILE * fp = fopen(c->device, "r");
-        fscanf(fp, "%s", buff);
+        fgets(buff, 512, fp);
         printf("Consumer %d reading: %s\n", c->id, buff);
         fclose(fp);
     }
