@@ -62,12 +62,8 @@ int scull_init_module(void)
 		
 	/* Initialize the semaphores*/
 	sema_init(&scullBufferDevice.sem, 1);
-<<<<<<< HEAD
-
-    /* Initialize counting semaphore */
-=======
+    	/* Initialize counting semaphore */
 	sema_init(&scullBufferDevice.sem_ct, scull_size);
->>>>>>> aa1d13fa174ffed49878b81bd8c40c85a8abe306
 	
 	/* Finally, set up the c dev. Now we can start accepting calls! */
 	scull_setup_cdev(&scullBufferDevice);
